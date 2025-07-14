@@ -119,17 +119,11 @@ export default function BeverageScreen({navigation = null, route = null}) {
       {
         text: 'OK',
         onPress: () => {
-          // You can navigate to the next screen here
-          // navigation.navigate('NextScreen', { 
-          //   partyConfig, 
-          //   selectedIngredients,
-          //   selectedBeverages 
-          // });
-          console.log('Complete BBQ configuration:', { 
+          // Navigate to BarbecueMaster screen
+          navigation.navigate('BarbecueMaster', { 
             partyConfig, 
             selectedIngredients,
-            selectedBeverages,
-            selectedNames 
+            selectedBeverages 
           });
         }
       }
