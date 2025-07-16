@@ -1,4 +1,78 @@
-This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
+# Churrascote - App de Churrasco
+
+Este é um aplicativo [**React Native**](https://reactnative.dev) para organização de churrascos, bootstrapped usando [`@react-native-community/cli`](https://github.com/react-native-community/cli).
+
+## Funcionalidades
+
+- **Login e Registro**: Sistema de autenticação de usuários
+- **Seleção de Pessoas**: Configuração do número de participantes
+- **Ingredientes**: Seleção de carnes e acompanhamentos
+- **Bebidas**: Escolha de bebidas para o evento
+- **Churrasqueiros**: Lista de profissionais disponíveis com avaliações e preços
+- **Sistema de Avaliações**: Usuários podem avaliar churrasqueiros que contrataram
+
+### Tela BarbecueMaster
+
+A nova tela **BarbecueMaster** permite aos usuários:
+
+- **Filtros de Localização**: Buscar e filtrar churrasqueiros por:
+  - Campo de busca (nome, cidade ou bairro)
+  - Filtros por cidade disponível
+  - Filtros por bairro disponível
+  - Limpar todos os filtros
+- Visualizar lista de churrasqueiros disponíveis
+- Ver informações detalhadas de cada profissional:
+  - Nome
+  - Localização (cidade e bairros atendidos)
+  - Especialidades
+  - Avaliação (1-5 estrelas)
+  - Valor do serviço
+- Selecionar um churrasqueiro para o evento
+- Estado de "nenhum resultado" quando filtros não retornam churrasqueiros
+
+### Tela de Escolha do Churrasqueiro
+
+A nova tela **BarbecueMasterChoice** permite aos usuários escolher entre:
+
+- **Selecionar Churrasqueiro**: Escolher um profissional para realizar o churrasco
+- **Avaliar Churrasqueiro**: Deixar uma avaliação para um churrasqueiro que já foi contratado
+
+### Tela de Avaliação
+
+A nova tela **Review** permite aos usuários:
+
+- Ver apenas os churrasqueiros que eles já contrataram
+- Avaliar com nota de 1 a 5 estrelas
+- Deixar comentários sobre a experiência
+- Sistema de validação para garantir que apenas usuários que contrataram podem avaliar
+
+### Dados dos Churrasqueiros
+
+Os dados são armazenados no AsyncStorage e incluem 5 exemplos de churrasqueiros com diferentes especialidades e localizações.
+
+### Sistema de Avaliações
+
+- As avaliações são armazenadas no AsyncStorage
+- Usuários só podem avaliar churrasqueiros que contrataram
+- Sistema de controle de seleções de usuários para garantir integridade das avaliações
+
+### Sistema de Notificações e SMS
+
+- **Notificação do Churrasqueiro**: Quando um churrasqueiro é selecionado, ele é automaticamente notificado sobre o pedido
+- **SMS para o Usuário**: Um SMS é enviado para o usuário com os dados de contato do churrasqueiro
+- **Dados de Contato**: Sistema gera automaticamente telefone, email e WhatsApp do churrasqueiro
+- **Indicador de Processamento**: Botão mostra "PROCESSANDO..." durante o envio das notificações
+
+### Tela de Confirmação
+
+A nova tela **Confirmation** exibe:
+
+- **Confirmação Visual**: Ícone de sucesso e mensagem de confirmação
+- **Dados do Churrasqueiro**: Nome, localização e valor do serviço
+- **Contatos Interativos**: Botões para ligar, enviar WhatsApp e email diretamente
+- **Informações Importantes**: Orientações sobre próximos passos
+- **Navegação**: Botão para iniciar um novo churrasco ou voltar
+- **Integração com Apps**: Abre automaticamente telefone, WhatsApp e email do dispositivo
 
 # Getting Started
 

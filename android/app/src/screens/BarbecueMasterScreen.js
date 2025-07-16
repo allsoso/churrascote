@@ -10,6 +10,8 @@ import {
   TextInput,
 } from 'react-native';
 import {getBarbecueMasters, initializeBarbecueMasters} from '../database/barbecue_master';
+import {saveUserSelection} from '../database/reviews';
+import {processBarbecueBooking} from '../utils/notificationService';
 
 const styles = StyleSheet.create({
   container: {
@@ -248,9 +250,10 @@ export default function BarbecueMasterScreen({navigation = null, route = null}) 
   const [selectedFilter, setSelectedFilter] = useState('');
   const [availableCities, setAvailableCities] = useState([]);
   const [availableNeighborhoods, setAvailableNeighborhoods] = useState([]);
+  const [processingBooking, setProcessingBooking] = useState(false);
 
   // Get configuration from previous screens
-  const {partyConfig, selectedIngredients, selectedBeverages} = route?.params || {};
+  const {partyConfig, selectedIngredients, selectedBeverages, mode = 'select'} = route?.params || {};
 
   useEffect(() => {
     loadBarbecueMasters();
@@ -329,6 +332,16 @@ export default function BarbecueMasterScreen({navigation = null, route = null}) 
       return;
     }
 
+    if (mode === 'review') {
+      // Navigate to review screen
+      navigation.navigate('Review', {
+        selectedMaster,
+        userEmail: 'user@example.com' // You should get this from login context
+      });
+      return;
+    }
+
+    // Mode is 'select' - original behavior
     Alert.alert(
       'Churrasqueiro Selecionado',
       `Você escolheu ${selectedMaster.name}!\n\nValor: R$ ${selectedMaster.price.toFixed(2)}\n\nDeseja continuar?`,
@@ -339,20 +352,67 @@ export default function BarbecueMasterScreen({navigation = null, route = null}) 
         },
         {
           text: 'Continuar',
-          onPress: () => {
-            console.log('Complete BBQ configuration:', {
-              partyConfig,
-              selectedIngredients,
-              selectedBeverages,
-              selectedMaster,
-            });
-            // You can navigate to the next screen here
-            // navigation.navigate('NextScreen', {
-            //   partyConfig,
-            //   selectedIngredients,
-            //   selectedBeverages,
-            //   selectedMaster,
-            // });
+          onPress: async () => {
+            setProcessingBooking(true);
+            try {
+              // Save user selection for future reviews
+              await saveUserSelection('user@example.com', selectedMaster.id);
+              
+              console.log('Complete BBQ configuration:', {
+                partyConfig,
+                selectedIngredients,
+                selectedBeverages,
+                selectedMaster,
+              });
+              
+              // Process the booking (notify master and send SMS)
+              const bookingResult = await processBarbecueBooking(
+                selectedMaster,
+                partyConfig,
+                selectedIngredients,
+                selectedBeverages
+              );
+              
+              if (bookingResult.success) {
+                // Navigate to confirmation screen
+                navigation.navigate('Confirmation', {
+                  selectedMaster,
+                  partyConfig,
+                  selectedIngredients,
+                  selectedBeverages
+                });
+              } else {
+                // Show error message
+                Alert.alert(
+                  'Erro na Confirmação',
+                  'Houve um problema ao processar sua solicitação. Tente novamente.',
+                  [
+                    {
+                      text: 'OK',
+                      onPress: () => {
+                        // Stay on current screen
+                      }
+                    }
+                  ]
+                );
+              }
+            } catch (error) {
+              console.error('Error processing booking:', error);
+              Alert.alert(
+                'Erro',
+                'Ocorreu um erro inesperado. Tente novamente.',
+                [
+                  {
+                    text: 'OK',
+                    onPress: () => {
+                      // Stay on current screen
+                    }
+                  }
+                ]
+              );
+            } finally {
+              setProcessingBooking(false);
+            }
           },
         },
       ]
@@ -492,9 +552,14 @@ export default function BarbecueMasterScreen({navigation = null, route = null}) 
   return (
     <View style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollContainer}>
-        <Text style={styles.title}>Escolha seu Churrasqueiro</Text>
+        <Text style={styles.title}>
+          {mode === 'review' ? 'Escolha um Churrasqueiro para Avaliar' : 'Escolha seu Churrasqueiro'}
+        </Text>
         <Text style={styles.subtitle}>
-          Selecione um profissional para seu churrasco
+          {mode === 'review' 
+            ? 'Selecione um profissional que você contratou para avaliar'
+            : 'Selecione um profissional para seu churrasco'
+          }
         </Text>
 
         {partyConfig?.total && (
@@ -523,15 +588,21 @@ export default function BarbecueMasterScreen({navigation = null, route = null}) 
         <TouchableOpacity
           style={[
             styles.continueButton,
-            !selectedMaster && styles.disabledButton,
+            (!selectedMaster || processingBooking) && styles.disabledButton,
           ]}
           onPress={handleContinue}
-          disabled={!selectedMaster}
+          disabled={!selectedMaster || processingBooking}
         >
           <Text style={styles.continueButtonText}>
-            {selectedMaster
-              ? `CONTINUAR COM ${selectedMaster.name.toUpperCase()}`
-              : 'SELECIONE UM CHURRASQUEIRO'}
+            {processingBooking
+              ? 'PROCESSANDO...'
+              : selectedMaster
+                ? mode === 'review'
+                  ? `AVALIAR ${selectedMaster.name.toUpperCase()}`
+                  : `CONTINUAR COM ${selectedMaster.name.toUpperCase()}`
+                : mode === 'review'
+                  ? 'SELECIONE UM CHURRASQUEIRO PARA AVALIAR'
+                  : 'SELECIONE UM CHURRASQUEIRO'}
           </Text>
         </TouchableOpacity>
       </ScrollView>

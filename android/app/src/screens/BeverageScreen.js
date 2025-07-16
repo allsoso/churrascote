@@ -116,17 +116,17 @@ export default function BeverageScreen({navigation = null, route = null}) {
     ).join(', ');
 
     Alert.alert('Sucesso', `Bebidas selecionadas: ${selectedNames}`, [
-      {
-        text: 'OK',
-        onPress: () => {
-          // Navigate to BarbecueMaster screen
-          navigation.navigate('BarbecueMaster', { 
-            partyConfig, 
-            selectedIngredients,
-            selectedBeverages 
-          });
+              {
+          text: 'OK',
+          onPress: () => {
+            // Navigate to BarbecueMasterChoice screen
+            navigation.navigate('BarbecueMasterChoice', { 
+              partyConfig, 
+              selectedIngredients,
+              selectedBeverages 
+            });
+          }
         }
-      }
     ]);
   };
 

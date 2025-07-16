@@ -14,7 +14,10 @@ import RegisterScreen from './android/app/src/screens/RegisterScreen';
 import SelectPersonsScreen from './android/app/src/screens/SelectPersonsScreen';
 import BbqIngredientsScreen from './android/app/src/screens/BbqIngredientsScreen';
 import BeverageScreen from './android/app/src/screens/BeverageScreen';
+import BarbecueMasterChoiceScreen from './android/app/src/screens/BarbecueMasterChoiceScreen';
 import BarbecueMasterScreen from './android/app/src/screens/BarbecueMasterScreen';
+import ReviewScreen from './android/app/src/screens/ReviewScreen';
+import ConfirmationScreen from './android/app/src/screens/ConfirmationScreen';
 
 const Stack = createStackNavigator();
 
@@ -35,7 +38,10 @@ function App() {
         <Stack.Screen name="SelectPersons" component={SelectPersonsScreen} />
         <Stack.Screen name="BbqIngredients" component={BbqIngredientsScreen} />
         <Stack.Screen name="Beverage" component={BeverageScreen} />
+        <Stack.Screen name="BarbecueMasterChoice" component={BarbecueMasterChoiceScreen} />
         <Stack.Screen name="BarbecueMaster" component={BarbecueMasterScreen} />
+        <Stack.Screen name="Review" component={ReviewScreen} />
+        <Stack.Screen name="Confirmation" component={ConfirmationScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );
